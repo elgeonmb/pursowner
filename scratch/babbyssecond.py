@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 from collections import deque
 
+pygame.init()
+
 #constant assignments
 screensize = (640, 480)
 topleft = (0,0)
@@ -14,8 +16,9 @@ botleft = (0, screensize[1])
 botmid = (screensize[0]/2, screensize[1])
 botright = screensize
 
+#getting access to fun fun pygame tools
 screen = pygame.display.set_mode(screensize)
-
+clock = pygame.time.Clock()
 
 def goodload(thing):
     '''Because the default load function is long and I'm lazy'''
@@ -26,10 +29,10 @@ class Vsprite:
     def __init__(self, appear, position):
         self.appear = goodload(appear)
         self.position = position
-    def moveup(self, quantity):
-        self.position = (self.position[0], self.position[1] + quantity)
     def movedown(self, quantity):
-        self.moveup(-1 * quantity)
+        self.position = (self.position[0], self.position[1] + quantity)
+    def moveup(self, quantity):
+        self.movedown(-1 * quantity)
     def moveright(self, quantity):
         self.position = (self.position[0] + quantity, self.position[1])
     def moveleft(self, quantity):
@@ -61,6 +64,15 @@ class Vdraw:
         if layer > 8:
             layer = 8
         self.layerlist[layer-1].append(sprite)
+    def undraw(self, sprite, layer=None)
+        '''Removes a given sprite from Vdraw. Will only operate once.'''
+        if layer = None:
+            for x in layerlist:
+                if sprite in x:
+                    x.remove(sprite)
+        else:
+            if sprite in layerlist[layer]:
+                layerlist[layer].remove(sprite)
     def render(self):
         '''Draws the screen. Should be called 30 times a second, hopefully.'''
         for x in self.layerlist:
@@ -79,10 +91,16 @@ pressed = pygame.key.get_pressed()
 
 
 while True:
+    clock.tick(60)
+    pygame.event.pump()
     pressed = pygame.key.get_pressed()
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            quit()
+        elif event.type == KEYDOWN and event.key == K_ESCAPE:
+            quit()
     if pressed[pygame.K_w]:
         test2.moveup(1)
-        print("Test!")
     if pressed[pygame.K_s]:
         test2.movedown(1)
     if pressed[pygame.K_a]:
@@ -91,7 +109,7 @@ while True:
         test2.moveright(1)
     draw.render()
     pygame.display.update()
-    print("Tick!")
+
 ##
 ##
 ##print(screensize)
