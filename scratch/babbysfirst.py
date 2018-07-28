@@ -17,21 +17,36 @@ gun = goodload("gun.png")
 ana = goodload("ana.png")
 per = goodload("per.png")
 menu = [atk, skil, tac, gun, ana, per]
-for x in range(len(menu)):
-	screen.blit(menu[x], (0, 60*x))
+
+def drawmenu():
+        for count, x in enumerate(menu):
+                screen.blit(x, (0, 60*count + 1))
+
+drawmenu()
 cursor = goodload("cursor.png")
-cursor.set_colorkey((0,0,0))
+cursor.set_colorkey((255,255,255))
 screen.blit(cursor, (0,0))
 pygame.display.update()
-
+cursor_pos = (0,0)
 def cursor_up():
-	if cursor.get_rect() == atk.get_rect():
-		
+        global cursor_pos
+        oldcursor = cursor_pos
+        if cursor_pos == (0,0):
+                cursor_pos = (0, 60 * len(menu))
+        else:
+                cursor_pos = [oldcursor[0], oldcursor[1] - 60]
+        drawmenu()
+        screen.blit(cursor, cursor_pos)
+        pygame.display.update()
 
 while True:
-	for event in pygame.event.get():
-		if event.type == QUIT:	
-			quit()
-		elif event.type == KEYDOWN:
-			if event.key == K_UP:
+        pygame.time.delay(100)
+        cursor_up()
+        pygame.time.delay(10)
+#while True:
+#	for event in pygame.event.get():
+#		if event.type == QUIT:	
+#			quit()
+#		elif event.type == KEYDOWN:
+#			if event.key == K_UP:
 				
