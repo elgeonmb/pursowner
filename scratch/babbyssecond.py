@@ -64,9 +64,9 @@ class Vdraw:
         if layer > 8:
             layer = 8
         self.layerlist[layer-1].append(sprite)
-    def undraw(self, sprite, layer=None)
+    def undraw(self, sprite, layer=None):
         '''Removes a given sprite from Vdraw. Will only operate once.'''
-        if layer = None:
+        if layer == None:
             for x in layerlist:
                 if sprite in x:
                     x.remove(sprite)
@@ -78,7 +78,8 @@ class Vdraw:
         for x in self.layerlist:
             for y in x:
                 screen.blit(y.appear, y.position)
-                
+        pygame.display.update()
+
 
 test1 = Vsprite("A.png", topleft)
 test2 = Vsprite("ana.png", midmid)

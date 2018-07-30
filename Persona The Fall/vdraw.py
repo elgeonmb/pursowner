@@ -1,8 +1,15 @@
 import pygame
 from pygame.locals import *
 from collections import deque
-from utilites import goodload
-from constants import *
+
+import utilities
+import constants
+
+screensize = constants.screensize
+goodload = utilities.goodload
+
+screen = pygame.display.set_mode(screensize)
+clock = pygame.time.Clock()
 
 class Vsprite:
     '''Contains a position (can be a constant or a 2-tuple) and an appearance (must be a string pointing to a file name)'''
@@ -32,8 +39,8 @@ class Vdraw:
         self.layer3 = deque()#enemies
         self.layer4 = deque()#players
         self.layer5 = deque()#effects
-        self.layer6 = deque()#cursors and whatnot
-        self.layer7 = deque()#just in case
+        self.layer6 = deque()#menus
+        self.layer7 = deque()#cursors and whatnot
         self.layer8 = deque()#also just in case
         self.layerlist = [self.layer1, self.layer2, self.layer3, self.layer4, self.layer5, self.layer6, self.layer7, self.layer8]
     def draw(self, sprite, layer):
@@ -44,9 +51,9 @@ class Vdraw:
         if layer > 8:
             layer = 8
         self.layerlist[layer-1].append(sprite)
-    def undraw(self, sprite, layer=None)
+    def undraw(self, sprite, layer=None):
         '''Removes a given sprite from Vdraw. Will only operate once.'''
-        if layer = None:
+        if layer == None:
             for x in layerlist:
                 if sprite in x:
                     x.remove(sprite)
@@ -58,3 +65,4 @@ class Vdraw:
         for x in self.layerlist:
             for y in x:
                 screen.blit(y.appear, y.position)
+        pygame.display.update()

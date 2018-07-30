@@ -1,0 +1,5 @@
+Each state's onenter defines how to process containers it might recieve from any predecessor state (as defined in the state diagram)
+
+Each state's onexit defines how to package containers for any possible successor state
+
+The state machine ensures that each state knows what the proceeding and following states will be and handles the actual passing of information and transfer of game control between states.
