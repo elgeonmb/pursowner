@@ -1,0 +1,28 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: pursowner
+Upstream-Contact: "Elgeon MB" <elgeonmb@gmail.com>
+Source: https://github.com/elgeonmb/pursowner
+
+Files: *
+Copyright: "Elgeon MB" <elgeonmb@gmail.com>
+License: GPL-3+
+
+Files: images/*
+Copyright: "Elgeon MB" <elgeonmb@gmail.com>
+License: CC-BY-SA-4.0
+
+Files: sounds/*
+Copyright: "Elgeon MB" <elgeonmb@gmail.com>
+License: CC-BY-SA-4.0
+
+Files:
+	music/dramaturgy.wav
+Copyright: Juliette Simmons <jubyphonics@gmail.com>
+License: CC-BY-SA-3.0
+Comment: "Dramaturgy" by Juby Phonic.
+
+Files:
+	music/hachiko.wav
+	music/wakeup.wav
+Copyright: The Kyoto Connection <http://www.thekyotoconnection.com/>
+License: CC-BY-SA-3.0

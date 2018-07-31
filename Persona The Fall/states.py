@@ -10,12 +10,17 @@ pygame.init()
 drawer = vdraw.Vdraw()
 clock = pygame.time.Clock()
 pygame.mixer.init()
+music = pygame.mixer.Channel(0)
+sfx = pygame.mixer.Channel(1)
 
+dramaturgy = constants.makemusic("dramaturgy.wav")
+woop = constants.makesound("woop.wav")
 
 class State:
     '''Base class for states. Take the previous state as an argument (except for MainMenuState)'''
     def init(self, before = None):
         self.prevstate = before
+		self.ready_to_exit = False
     def on_enter(self):
         pass
     def on_exit(self):
@@ -43,6 +48,9 @@ class MainMenuState(State):
         drawer.draw(self.newgame, 3)
         drawer.draw(self.loadgame, 3)
         drawer.draw(self.cursor, 5)
+		dramaturgy = constants.makemusic("dramaturgy.wav")
+		woop = constants.makesound("woop.wav")
+		music.play(dramaturgy)
     def on_exit(self):
         pass
     def perframe(self):
@@ -60,6 +68,7 @@ class MainMenuState(State):
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_w] or pressed[pygame.K_s] or pressed[pygame.K_UP] or pressed[pygame.K_DOWN]:
             self.clickdelay = 4
+			sfx.play(woop)
             print("THIS PART IS WORKIGN")
             if self.cursor_on_load:
                 self.cursor_on_load = False
