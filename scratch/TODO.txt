@@ -1,0 +1,8 @@
+Sound
+State Machine
+Basic VN Engine
+Port Combat Engine
+Basic Social Map
+Save/Load (incl. reading VN scripts)
+Maps
+actual content
