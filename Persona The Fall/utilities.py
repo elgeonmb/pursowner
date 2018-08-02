@@ -7,8 +7,8 @@ def goodload(thing):
 	
 def makesound(thing):
 	'''It's like goodload, but for sound.'''
-	return pygame.mixer.Sound("sound/" + thing)
+	return pygame.mixer.Sound("sounds/" + thing)
 
 def makemusic(thing):
 	'''I love snowflake code.'''
-	return pygame.mixer.Sound("music/ + thing)
+	return pygame.mixer.Sound("music/" + thing)

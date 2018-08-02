@@ -13,18 +13,15 @@ pygame.mixer.init()
 music = pygame.mixer.Channel(0)
 sfx = pygame.mixer.Channel(1)
 
-dramaturgy = constants.makemusic("dramaturgy.wav")
-woop = constants.makesound("woop.wav")
-
 class State:
     '''Base class for states. Take the previous state as an argument (except for MainMenuState)'''
     def init(self, before = None):
         self.prevstate = before
-		self.ready_to_exit = False
+        self.ready_to_exit = False
     def on_enter(self):
         pass
     def on_exit(self):
-        pass
+        return (True, State())
     def perframe(self):
         pass
         
@@ -48,11 +45,22 @@ class MainMenuState(State):
         drawer.draw(self.newgame, 3)
         drawer.draw(self.loadgame, 3)
         drawer.draw(self.cursor, 5)
-		dramaturgy = constants.makemusic("dramaturgy.wav")
-		woop = constants.makesound("woop.wav")
-		music.play(dramaturgy)
+        self.dramaturgy = utilities.makemusic("dramaturgy.ogg")
+        self.woop = utilities.makesound("woop.ogg")
+        music.play(self.dramaturgy)
     def on_exit(self):
-        pass
+        if cursor_on_load:
+            return State().on_exit() #replace with fancy loading code
+        else:
+            del self.bg
+            del self.menu
+            del self.newgame
+            del self.loadgame
+            del self.cursor
+            music.stop()
+            sfx.stop()
+            del self.dramaturgy
+            del self.woop
     def perframe(self):
         clock.tick(30)
         drawer.render()
@@ -68,7 +76,7 @@ class MainMenuState(State):
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_w] or pressed[pygame.K_s] or pressed[pygame.K_UP] or pressed[pygame.K_DOWN]:
             self.clickdelay = 4
-			sfx.play(woop)
+            sfx.play(self.woop)
             print("THIS PART IS WORKIGN")
             if self.cursor_on_load:
                 self.cursor_on_load = False
@@ -82,6 +90,22 @@ class MainMenuState(State):
             else:
                 print("NEW GAME!")
 
+class VnState(State):
+    pass
+                
+class StateManager:
+    '''The big boy that makes all the other states play nice'''
+    def __init__(self, state_stack = None):
+        self.state_stack = state_stack
+        self.state_to_call = None
+        self.outbound = None
+    def perframe(self):
+        if self.state_stack == None:
+            self.state_stack = deque()
+            self.state_stack.append(MainMenuState()) #we can assume that if the statestack is empty that we need to be calling the menu
+        if self.state_stack[-1].ready_to_exit:
+            self.outbound = self.running_state.on_exit()
+            self.
 menu = MainMenuState()
 menu.on_enter()
 while True:
