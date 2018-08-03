@@ -115,11 +115,17 @@ class MainMenuState(State):
                 print(self.stateman.state_stack)
 
 class JunkState(State):
+    def __init__(self, stateman):
+        super().__init__(stateman)
+        self.counter = 0
     def on_enter(self):
         print("JunkState Entered")
         drawer.whiteout()
     def perframe(self):
         print("TICK!")
+        self.counter += 1
+        if self.counter > 100:
+            self.stateman.state_stack.remove(self)
 
 class VnState(State):
     pass
