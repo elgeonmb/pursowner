@@ -43,6 +43,10 @@ class Vdraw:
         self.layer7 = deque()#cursors and whatnot
         self.layer8 = deque()#also just in case
         self.layerlist = [self.layer1, self.layer2, self.layer3, self.layer4, self.layer5, self.layer6, self.layer7, self.layer8]
+    def whiteout(self):
+        for layers in self.layerlist:
+            layers.clear()
+        screen.fill((255,255,255))
     def draw(self, sprite, layer):
         '''Adds a given sprite to a layer'''
         #todo: error handling

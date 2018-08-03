@@ -2,11 +2,9 @@ import pygame
 from pygame.locals import *
 from collections import deque
 
-import random
 import utilities
 import vdraw
 import constants
-import events
 pygame.init()
 
 drawer = vdraw.Vdraw()
@@ -15,39 +13,19 @@ pygame.mixer.init()
 music = pygame.mixer.Channel(0)
 sfx = pygame.mixer.Channel(1)
 
-class StateManager: #incidentally this is an object because I cba to fuck around with global statements
-    '''Manages states.'''
-    def __init__(self):
-        self.state_stack = deque()
-        self.demon_list = deque()
-        self.party_list = deque()
-        self.slinks = deque()
-        self.inventory = deque()
-        self.money = 0
-        self.date = (4, 1)
-        self.event_manager = events.EventManager()
-        self.prevstate = None
-    def render(self):
-        clock.tick(30)
-        if self.state_stack[-1] != self.prevstate:
-            if self.prevstate:
-                self.prevstate.on_exit()
-                print("Prevstate Exited!")
-                print(self.prevstate)
-            self.state_stack[-1].on_enter()
-            print("New state entered!")
-            print(self.state_stack[-1])
-            self.prevstate = self.state_stack[-1]
-            print("Prevstate assigned!")
-            print(self.prevstate)
-        self.state_stack[-1].perframe()
-        drawer.render()
-
 class State:
     '''Base class for states. Take the previous state as an argument (except for MainMenuState)'''
-    def __init__(self, stateman):        
-        self.stateman = stateman
+    def init(self, before = None):
+        self.prevstate = before
+        self.ready_to_exit = False
+        self.requested_state = None # should be a string either corresponding to a class name or "Back"
     def on_enter(self):
+        pass
+    def pack(self):
+        '''Called when moving to a new state in the stack (eg entering a battle from dungeon exploration. Sets variables on this instance according to passed arguments'''
+        pass
+    def unpack(self):
+        '''Called when moving back up the stack (eg entering dungeon exploration from a battle). Creates a tuple to pass to the parent state's handle_children'''
         pass
     def on_exit(self):
         pass
@@ -56,8 +34,8 @@ class State:
         
 class MainMenuState(State):
     '''State used only for the main menu (the new/load/options screen)'''
-    def __init__(self, stateman):
-        super().__init__(stateman)
+    def __init__(self, before = None):
+        super().__init__()
         self.cursor_on_load = False
         self.clickdelay = 0
     def on_enter(self):
@@ -78,13 +56,22 @@ class MainMenuState(State):
         self.woop = utilities.makesound("woop.ogg")
         music.play(self.dramaturgy)
     def on_exit(self):
+        if cursor_on_load:
+            print("What, do you think I actually know what the fuck I'm doing?")
+        else:
             del self.bg
             del self.menu
             del self.newgame
             del self.loadgame
             del self.cursor
-            print("Eyyy")
+            music.stop()
+            sfx.stop()
+            del self.dramaturgy
+            del self.woop
+            self.requested_state = "VN"
     def perframe(self):
+        clock.tick(30)
+        drawer.render()
         if self.clickdelay > 0:
             self.clickdelay -= 1
             return
@@ -110,26 +97,27 @@ class MainMenuState(State):
                 print("LOADED!")
             else:
                 print("NEW GAME!")
-                print(self.stateman)
-                self.stateman.state_stack.append(JunkState(self.stateman))
-                print(self.stateman.state_stack)
-
-class JunkState(State):
-    def on_enter(self):
-        print("JunkState Entered")
-        drawer.whiteout()
-    def perframe(self):
-        print("TICK!")
 
 class VnState(State):
     pass
-
-man = StateManager()
-man.state_stack.append(MainMenuState(man)) #append this and keep it at the root to prevent index errors
-
+                
+class StateManager:
+    def __init__(self):
+        self.state_stack = deque()
+        self.state_stack.append(MainMenuState()) # newly initialized stateman should include a main menu state
+    def change_state(self):
+        activestate = self.state_stack[-1]
+        newstate = activestate.requested_state
+        if newstate = "Back":
+            self.state_stack[-2].handle_children(activestate.handle_parents())
+        if newstate = "VN":
+            self.state_stack.append(VnState())
+            self.state_stack[-1].
+                
+menu = MainMenuState()
+menu.on_enter()
 while True:
-    man.render()
-
+    menu.perframe()
             
 print("aw fuck")
         

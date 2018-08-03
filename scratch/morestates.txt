@@ -1,0 +1,32 @@
+THINGS THAT CAN CHANGE WHILE TRANSITIONING FROM BATTLE TO DUNGEON
+
+a) Demon list
+b) Statistics of demons
+c) Statistics of comrades
+d) Statistics of player
+e) Inventory
+f) Storyline triggers (at the very least the FOE that triggered the battle should go away)
+
+THINGS THAT CAN CHANGE WHILE TRANSITIONING FROM DUNGEON TO VN
+a) The above
+b) additional storyline triggers
+
+THINGS THAT CAN CHANGE WHILE TRANSITIONING FROM VN TO DUNGEON
+a) The above
+b) Social Links and Confidant abilities
+c) Party member list
+
+The Velvet Room only changes the demon list
+
+GRAND LIST OF THINGS THAT NEED TO BE GLOBALS
+
+a) demon list (w/ editable referenceable members)
+b) party list (same as the above)
+c) player statistics (probably included in demon list)
+d) Social Link progress
+e) Inventory
+f) Triggers
+
+no idea how i'm going to handle triggers. time to ask google.
+
+literally just a container class that tracks related events. makes sense to me. 
