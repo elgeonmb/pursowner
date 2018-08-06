@@ -1,0 +1,46 @@
+the goal of the font handler is to provide a sprite object or number of sprite objects (or rather, font objects which implement the same interface) corresponding to a given text using the font module, which is a lot easier said than done if I'm being perfectly honest.
+
+to acomplish this, it needs to perform a number of tasks of varying complexity
+
+to break these tasks down we're gonna look at a number of times we need to write text in this game (some niche applications like the splash screen or even menu options can be implemented as sprites and so don't warrent concideration)
+
+Battle messages (one line across the top of the screen)
+Shout panel (narrow collumn that takes up an entire section of the screen
+VN text (Multiple lines filling a wide horizontal row)
+VN lables (one word)
+Equipment/Persona names (individual words)
+Equipment description (multiple lines but could probably be made a single long row ala battle messages)
+Compendium entries (probably implementable through the same mechanics as the shout panel)
+
+So it's pretty clear that we're going to need a function that automatically formats text so as to pleasantly fit within a given space, which should probably be able to be a Surface or a pseudo-Surface that still implements height and width.
+
+The VN parser is without a doubt going to be the most difficult part of this, if we want it to be able to parse script files the way we want it to. Some of that complexity can probably be stripped away with a preprocessor that automatically divides long messages into multiple window-sized chunks.
+
+Something I'd also LIKE but might not implement depending on difficulty is character-by-character rendering? I can't think of a way to do it other than storing a pre-render approximation of the processed text and then rendering a new character every frame, which sounds like a pain in the ass but let's shoot for the moon.
+
+I'M GOING TO PASS THE FUCK OUT BUT BEFORE I DO HERE'S WHAT I WORKED OUT
+
+percharacter rendering is handled through a perframe method called on every rendered object in Vdraw.render() which also solves animations (which I have now implemented but not tested please do that asap)
+
+Text object is easy, it's just a Vsprite child that renders a string to produce its self.appear
+
+Text processing for many lines is best implemented as a function in the vdraw module instead of its own Thing. Ideally this is a function that returns a variable number of font objects depending on the passed parameter (and will overflow the box rather than crashing if the provided text literally cannot fit in the provided box)
+
+Vdraw will need a new method or a modification to self.draw in order to handle the lists that textparse will return. something that works on ieterables? def draw(self, layer, *args)?
+
+the UI information is going to be stolen from Endless Sky at least as far as the VN section goes (the VN section being the most text-processing heavy for obvious reasons)
+
+if we plan on doing runtime script parsing instead of just using a preprocessor as a tool to help us write VN sections then we're going to need a way to signal to the VN module that it's time to render a new text box
+
+so the toolchain goes
+
+preprocessor works a script file and renders it into a list of (flag, string) 2-tuples
+VN works on the list, rendering each appropriately (flags pointing to either "this is the name of the speaker, maintain it until changed or cleared", "this is a new appearence for the character on the left", "this is a new appearence for the character on the right", "this is dialogue to be rendered in the main box", "wait until user input and then clear the box", "wait until user input and then NEWSTATE")
+assuming what's being processed is actually dialogue, VN sends the long string to vdraw.textparse inside a call to vdraw.Vdraw
+textparse renders the long string into smaller Vtexts w/ a given y-offset
+vdraw.Vdraw catches the return and actually draws the text
+we can extend vdraw.Vdraw.undraw() to be able to clear all objects on a given layer and then fill a layer with ONLY the dialogue text we want to clear on user input, enabling us to clear the dialogue box. Same can be repeated with labels and of course the character sprites will actually be just two set sprites modifying themselves with Vsprite.setapp
+
+the Shoutbox machine will handle text similarly to VN but working within different dimensions. Other sources of text likely won't require preprocessor support so we can manually process them probably with a tool we cobble together out of vdraw.textparse and the script preprocessor
+
+holy shit this might actually work

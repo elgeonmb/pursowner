@@ -26,7 +26,7 @@ c) player statistics (probably included in demon list)
 d) Social Link progress
 e) Inventory
 f) Triggers
-
+g) compendium
 no idea how i'm going to handle triggers. time to ask google.
 
 literally just a container class that tracks related events. makes sense to me. 
